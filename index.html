@@ -4,21 +4,27 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>For Ameena ❤️</title>
-
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
-
 <style>
+/* ================= PRELOAD ================= */
+body.preload #lockScreen,
+body.preload #birthdayContent {
+  display: none !important;
+}
+
+/* ================= BODY ================= */
 body {
   margin: 0;
   font-family: 'Poppins', sans-serif;
   background: radial-gradient(circle at top, #3a0a2a 0%, #1a0015 40%, #000000 100%);
+  background-color: #000000;
   text-align: center;
   overflow-x: hidden;
   color: #ffd6f5;
 }
 
-/* ================= BIRTHDAY GATE ================= */
-#birthdayGate {
+/* ================= LOCK SCREEN ================= */
+#lockScreen {
   position: fixed;
   inset: 0;
   background: radial-gradient(circle at top, #3a0a2a 0%, #1a0015 40%, #000000 100%);
@@ -30,14 +36,14 @@ body {
   flex-direction: column;
 }
 
-.big-title {
+.lock-title {
   font-size: 3rem;
   color: #ff4da6;
   text-shadow: 0 0 25px #ff0066, 0 0 50px #ff0066;
   margin-bottom: 40px;
 }
 
-#bigCountdown {
+#countdownDisplay {
   font-size: 4.5rem;
   font-weight: 700;
   color: #ffd6f5;
@@ -45,34 +51,35 @@ body {
   margin-bottom: 30px;
 }
 
-.sub-text {
+.lock-subtext {
   font-size: 1.2rem;
   color: #ff85c1;
   opacity: 0.8;
 }
 
-/* ================= MAIN PAGE ================= */
-#mainContent {
+/* ================= MAIN CONTENT ================= */
+#birthdayContent {
   display: none;
 }
 
-h1{
+h1 {
   font-size: 2.8rem;
   margin-top: 40px;
   color: #ff4da6;
   text-shadow: 0 0 15px #ff0066, 0 0 30px #ff0066;
 }
 
-h1#memories {
+h1#memoriesHeader {
   font-size: 2rem;
 }
 
-h2 { 
+h2 {
   font-size: 1.8rem;
   margin-top: 60px;
-  color: #ff85c1; }
+  color: #ff85c1;
+}
 
-.countdown, .days-lived, .quote {
+.birthdayMessage, .daysAlive, .specialQuote {
   font-size: 1.5rem;
   margin: 20px auto;
   background: rgba(255,0,102,0.1);
@@ -84,8 +91,12 @@ h2 {
   border: 1px solid rgba(255,0,102,0.3);
 }
 
+.quoteTrigger, .slideshowTrigger {
+    cursor: pointer;
+}
+
 /* ================= QUOTE ================= */
-.quote {
+.specialQuote {
   display: none;
   opacity: 0;
   margin: 80px auto;
@@ -103,13 +114,13 @@ h2 {
   transition: opacity 1s ease-in-out;
 }
 
-.quote.show {
+.specialQuote.show {
   display: block;
   opacity: 1;
 }
 
 /* ================= SLIDESHOW ================= */
-.slideshow-container {
+.memorySlideshow {
   opacity: 0;
   pointer-events: none;
   position: relative;
@@ -123,18 +134,18 @@ h2 {
   transition: opacity 0.5s ease-in-out;
 }
 
-.slideshow-container.show {
+.memorySlideshow.show {
   opacity: 1;
   pointer-events: auto;
 }
 
-.slides {
+.slidesWrapper {
   display: flex;
   height: 100%;
   transition: transform 0.5s ease-in-out;
 }
 
-.slide {
+.slideItem {
   min-width: 100%;
   height: 100%;
   overflow: hidden;
@@ -142,25 +153,25 @@ h2 {
   transition: transform 4s ease-in-out;
 }
 
-.slide.active-slide {
+.slideItem.activeSlide {
   transform: scale(1.1);
 }
 
-.slide img {
+.slideItem img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   border-radius: 30px;
 }
 
-.dots {
+.slideDots {
   position: absolute;
   bottom: 10px;
   width: 100%;
   text-align: center;
 }
 
-.dot {
+.slideDot {
   display: inline-block;
   width: 8px;
   height: 8px;
@@ -169,13 +180,13 @@ h2 {
   border-radius: 50%;
 }
 
-.dot.active {
+.slideDot.active {
   background: #ff4da6;
   box-shadow: 0 0 15px #ff0066;
 }
 
 /* ================= FLOATING HEARTS ================= */
-.hearts {
+.heartIcon {
   position: fixed;
   bottom: -10px;
   font-size: 24px;
@@ -189,160 +200,162 @@ h2 {
 }
 </style>
 </head>
-<body>
+<body class="preload">
 
-<!-- ================= BIRTHDAY LOCK SCREEN ================= -->
-<div id="birthdayGate">
-  <h1 class="big-title">A Special Day Is Coming 💖</h1>
-  <div id="bigCountdown"></div>
-  <p class="sub-text">Unlocks at midnight ✨</p>
+<!-- ================= LOCK SCREEN ================= -->
+<div id="lockScreen">
+  <h1 class="lock-title">A Special Day Is Coming 💖</h1>
+  <div id="countdownDisplay"></div>
+  <p class="lock-subtext">Unlocks at midnight ✨</p>
 </div>
 
 <!-- ================= MAIN CONTENT ================= -->
-<div id="mainContent">
+<div id="birthdayContent">
+  <audio id="bgMusic" autoplay loop playsinline>
+    <source src="The metro proposal.mp3" type="audio/mpeg">
+  </audio>
 
-<audio id="bgMusic" autoplay loop playsinline>
-  <source src="The metro proposal.opus" type="audio/mpeg">
-</audio>
+  <h1>For You, Ameena 💖</h1>
 
-<h1>For You, Ameena 💖</h1>
-
-<div class="countdown">
-  ⏳ Just <span id="timer"></span> until the day the world was gifted someone as beautiful as you 🎂✨
-</div>
-
-<div class="days-lived">
-  🌸 For <span id="daysLived"></span> days, you’ve been lighting up this world… and my life has been brighter since you walked into it 💕
-</div>
-
-<h2 class="quote-trigger">💌 Click to see my special message</h2>
-<div class="quote">
-  <p>
-  “If I could give you one thing in this world,  
-  it would be the ability to see yourself through my eyes.  
-  Then you would know how unbelievably special you are to me.” 💖
-  </p>
-</div>
-
-<h1 id="memories">Our Beautiful Memories Together 📸💞</h1>
-<h2 class="slideshow-trigger">💖 Click to reveal our memories</h2>
-
-<div class="slideshow-container">
-  <div class="slides">
-    <div class="slide"><img src="photo1.jpeg"></div>
-    <div class="slide"><img src="photo2.jpeg"></div>
-    <div class="slide"><img src="photo3.jpeg"></div>
-    <div class="slide"><img src="photo4.jpeg"></div>
-    <div class="slide"><img src="photo5.jpeg"></div>
-    <div class="slide"><img src="photo6.jpeg"></div>
+  <div class="birthdayMessage">
+    Happy Birthday, Ameena! 💖🎂
   </div>
-  <div class="dots">
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-    <span class="dot"></span>
-  </div>
-</div>
 
+  <div class="daysAlive">
+    For 20 years, you've been lighting up this world… and my life has been brighter ever since you walked into it 💕
+  </div>
+
+  <h2 class="quoteTrigger">💌 Click to see my special message</h2>
+  <div class="specialQuote">
+    <p>“If I could give you one thing in this world,<br>
+    it would be the ability to see yourself through my eyes.<br>
+    Then you would know how unbelievably special you are to me.” 💖</p>
+  </div>
+
+  <h1 id="memoriesHeader">Our Beautiful Memories Together 📸💞</h1>
+  <h2 class="slideshowTrigger">💖 Click to reveal our memories</h2>
+
+  <div class="memorySlideshow">
+    <div class="slidesWrapper">
+      <div class="slideItem"><img src="photo1.jpeg"></div>
+      <div class="slideItem"><img src="photo2.jpeg"></div>
+      <div class="slideItem"><img src="photo3.jpeg"></div>
+      <div class="slideItem"><img src="photo4.jpeg"></div>
+      <div class="slideItem"><img src="photo5.jpeg"></div>
+      <div class="slideItem"><img src="photo6.jpeg"></div>
+    </div>
+    <div class="slideDots">
+      <span class="slideDot"></span>
+      <span class="slideDot"></span>
+      <span class="slideDot"></span>
+      <span class="slideDot"></span>
+      <span class="slideDot"></span>
+      <span class="slideDot"></span>
+    </div>
+  </div>
 </div>
 
 <script>
-const birthdayDate = new Date("February 20, 2026 00:00:00").getTime();
+document.addEventListener("DOMContentLoaded", function(){
 
-/* ===== COUNTDOWN GATE ===== */
-function updateCountdown() {
-  const now = new Date().getTime();
-  const diff = birthdayDate - now;
+  const birthdayTime = new Date("February 23, 2026 00:00:00").getTime();
+  let unlocked = false;
 
-  if (diff <= 0) {
-    unlockPage();
-    return;
+  function initPage() {
+    const now = new Date().getTime();
+    const diff = birthdayTime - now;
+    const lock = document.getElementById("lockScreen");
+    const main = document.getElementById("birthdayContent");
+
+    if(diff <= 0){
+      lock.style.display="none";
+      main.style.display="block";
+      unlocked=true;
+    } else {
+      lock.style.display="flex";
+      main.style.display="none";
+      startCountdown();
+    }
+
+    document.body.classList.remove("preload");
   }
 
-  const days = Math.floor(diff / (1000*60*60*24));
-  const hours = Math.floor((diff / (1000*60*60)) % 24);
-  const minutes = Math.floor((diff / (1000*60)) % 60);
-  const seconds = Math.floor((diff / 1000) % 60);
+  /* ================= COUNTDOWN ================= */
+  function startCountdown(){
+    const countdownInterval = setInterval(()=>{
+      const now = new Date().getTime();
+      const diff = birthdayTime - now;
 
-  const format = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      if(diff <=0){
+        clearInterval(countdownInterval);
+        location.reload();
+        return;
+      }
 
-  document.getElementById("bigCountdown").innerText = format;
-  const small = document.getElementById("timer");
-  if(small) small.innerText = format;
-}
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff / (1000*60*60))%24);
+      const minutes = Math.floor((diff / (1000*60))%60);
+      const seconds = Math.floor((diff/1000)%60);
 
-function unlockPage(){
-  document.getElementById("birthdayGate").style.display = "none";
-  document.getElementById("mainContent").style.display = "block";
-}
+      const format = `${days}d ${hours}h ${minutes}m ${seconds}s`;
+      document.getElementById("countdownDisplay").innerText = format;
+    },1000);
+  }
 
-setInterval(updateCountdown,1000);
-updateCountdown();
+  /* ================= QUOTE ================= */
+  document.querySelector(".quoteTrigger").addEventListener("click",function(){
+    document.querySelector(".specialQuote").classList.add("show");
+    this.style.display="none";
+  });
 
-/* ===== DAYS LIVED ===== */
-function calculateDaysLived(){
-  const birthDate = new Date(2006,1,23);
-  const diff = new Date() - birthDate;
-  const days = Math.floor(diff / (1000*60*60*24));
-  document.getElementById("daysLived").innerText = days;
-}
-calculateDaysLived();
+  /* ================= SLIDESHOW ================= */
+  let currentSlideIndex=0;
+  const slidesWrapper=document.querySelector(".slidesWrapper");
+  const slideItems=document.querySelectorAll(".slideItem");
+  const slideDots=document.querySelectorAll(".slideDot");
+  const totalSlides=slideItems.length;
 
-/* ===== QUOTE ===== */
-document.querySelector(".quote-trigger").addEventListener("click",function(){
-  document.querySelector(".quote").classList.add("show");
-  this.style.display="none";
-});
+  function updateSlideShow(){
+    slidesWrapper.style.transform=`translateX(-${currentSlideIndex*100}%)`;
+    slideItems.forEach(s=>s.classList.remove("activeSlide"));
+    slideItems[currentSlideIndex].classList.add("activeSlide");
+    slideDots.forEach(d=>d.classList.remove("active"));
+    slideDots[currentSlideIndex].classList.add("active");
+  }
 
-/* ===== SLIDESHOW ===== */
-let currentIndex=0;
-const slides=document.querySelector(".slides");
-const slidesItems=document.querySelectorAll(".slide");
-const dots=document.querySelectorAll(".dot");
-const totalSlides=slidesItems.length;
+  function startSlideShow(){
+    document.querySelector(".memorySlideshow").classList.add("show");
+    updateSlideShow();
+    setInterval(()=>{
+      currentSlideIndex=(currentSlideIndex+1)%totalSlides;
+      updateSlideShow();
+    },4000);
+  }
 
-function updateSlider(){
-  slides.style.transform=`translateX(-${currentIndex*100}%)`;
-  slidesItems.forEach(s=>s.classList.remove("active-slide"));
-  slidesItems[currentIndex].classList.add("active-slide");
-  dots.forEach(d=>d.classList.remove("active"));
-  dots[currentIndex].classList.add("active");
-}
+  document.querySelector(".slideshowTrigger").addEventListener("click",function(){
+    this.style.display="none";
+    startSlideShow();
+  });
 
-function startSlideshow(){
-  document.querySelector(".slideshow-container").classList.add("show");
-  updateSlider();
+  /* ================= FLOATING HEARTS ================= */
   setInterval(()=>{
-    currentIndex=(currentIndex+1)%totalSlides;
-    updateSlider();
-  },4000);
-}
+    const heart=document.createElement("div");
+    heart.classList.add("heartIcon");
+    heart.innerHTML="💖";
+    heart.style.left=Math.random()*100+"vw";
+    heart.style.animationDuration=(3+Math.random()*2)+"s";
+    document.body.appendChild(heart);
+    setTimeout(()=>heart.remove(),5000);
+  },600);
 
-document.querySelector(".slideshow-trigger").addEventListener("click",function(){
-  this.style.display="none";
-  startSlideshow();
+  /* ================= MUSIC AUTOPLAY ================= */
+  document.addEventListener("click",()=>{
+    const music=document.getElementById("bgMusic");
+    music.play().catch(()=>{});
+  },{once:true});
+
+  initPage();
 });
-
-/* ===== FLOATING HEARTS ===== */
-setInterval(()=>{
-  const heart=document.createElement("div");
-  heart.classList.add("hearts");
-  heart.innerHTML="💖";
-  heart.style.left=Math.random()*100+"vw";
-  heart.style.animationDuration=(3+Math.random()*2)+"s";
-  document.body.appendChild(heart);
-  setTimeout(()=>heart.remove(),5000);
-},600);
-
-/* ===== MUSIC AUTOPLAY FIX ===== */
-document.addEventListener("click",()=>{
-  const music=document.getElementById("bgMusic");
-  music.play().catch(()=>{});
-},{once:true});
 </script>
-
 </body>
-
 </html>
