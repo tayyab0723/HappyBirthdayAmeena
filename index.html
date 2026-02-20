@@ -211,7 +211,7 @@ h2 {
 
 <!-- ================= MAIN CONTENT ================= -->
 <div id="birthdayContent">
-  <audio id="bgMusic" autoplay loop playsinline>
+  <audio id="bgMusic" loop playsinline>
     <source src="The metro proposal.mp3" type="audio/mpeg">
   </audio>
 
@@ -261,6 +261,18 @@ document.addEventListener("DOMContentLoaded", function(){
   const birthdayTime = new Date("February 23, 2026 00:00:00").getTime();
   let unlocked = false;
 
+  document.addEventListener("contextmenu", e => e.preventDefault());
+
+  document.addEventListener("keydown", function(e) {
+    if (e.key === "F12" || 
+        (e.ctrlKey && e.shiftKey && e.key === "I") || 
+        (e.ctrlKey && e.shiftKey && e.key === "C") || 
+        (e.ctrlKey && e.key === "u")) {
+      e.preventDefault();
+      alert("😁 Secret! Just enjoy your birthday!");
+    }
+  });
+
   function initPage() {
     const now = new Date().getTime();
     const diff = birthdayTime - now;
@@ -268,9 +280,18 @@ document.addEventListener("DOMContentLoaded", function(){
     const main = document.getElementById("birthdayContent");
 
     if(diff <= 0){
-      lock.style.display="none";
-      main.style.display="block";
-      unlocked=true;
+      lock.style.display = "none";
+      main.style.display = "block";
+      unlocked = true;
+
+      // Wait for first click to play music
+      const music = document.getElementById("bgMusic");
+      const playMusicOnClick = () => {
+        music.play().catch(()=>{});
+        document.removeEventListener("click", playMusicOnClick);
+      };
+
+      document.addEventListener("click", playMusicOnClick);
     } else {
       lock.style.display="flex";
       main.style.display="none";
@@ -347,12 +368,6 @@ document.addEventListener("DOMContentLoaded", function(){
     document.body.appendChild(heart);
     setTimeout(()=>heart.remove(),5000);
   },600);
-
-  /* ================= MUSIC AUTOPLAY ================= */
-  document.addEventListener("click",()=>{
-    const music=document.getElementById("bgMusic");
-    music.play().catch(()=>{});
-  },{once:true});
 
   initPage();
 });
